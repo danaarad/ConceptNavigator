@@ -1,6 +1,9 @@
 # ConceptNavigator
 An implementation of Concept Navigator: Exploring and Analyzing Concepts in e-Commerce Models
 
+## Demonstration Video
+A system semonstration video is [avaliable]().
+
 ## Abstract
 Explainable machine learning methods are imperative to increasing decision transparency and improving customer trust. In recent years, opaque model architectures, specifically deep neural networks, have become popular in the domain of e-commerce. In order to take advantage of the high accuracy of these models, while still enabling decision transparency, the research community has sought methods to analyze and explain their decision process.
 
@@ -12,9 +15,6 @@ Concept Activation Vectors (CAV) are one such method that outputs an interpretat
  
 
 <img style="witdh: 50%;" src="images/explore_screen.png"> <img style="witdh: 50%;" src="images/define_screen.png">
-
-## Demonstration Video
-A system semonstration video is [avaliable]().
 
 ## Prepare the Enviroment 
 1. Clone this repository: 

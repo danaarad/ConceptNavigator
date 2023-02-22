@@ -11,7 +11,7 @@ Concept Activation Vectors (CAV) are one such method that outputs an interpretat
  We present **Concept Navigator**, a system for a visual semantic explanation of the decision space of deep neural models trained on e-commerce images and tasks. 
  
 
-<img src="images/explore_screen.png"> <img src="images/define_screen.png">
+<img style="witdh: 50%;" src="images/explore_screen.png"> <img style="witdh: 50%;" src="images/define_screen.png">
 
 ## Demonstration Video
 A system semonstration video is [avaliable]().
@@ -37,13 +37,11 @@ Download the [Amazon products dataset](https://nijianmo.github.io/amazon/) and u
 Collect n-grams:
 ```
 python generate_ngrams.py
-
 ```
 
 Annotate products with concepts:
 ```
 python annotate_concepts.py
-
 ```
 
 Split products into train/dev/test:
@@ -55,15 +53,6 @@ python split_products.py
 ## Train Prediction Models
 Fine-tune ViT models on price prediction and category prediction tasks:
 
-```
-python main.py --action=train --model=pretraining --data=./data/<database_name> --dataset=<database_name> --save=<path_to_save_model> --epochs=20 --batch_size=32 --grad_accumulation=2 --use_sim_r --use_sim_w --use_sim_s
-
-```
-
- 
- ## Fine Tuning LearnShapley
- We then fine-tune the model to predict Shapley values:
- 
  Price Prediction:
  ```
  python train_price_prediction.py
@@ -81,7 +70,6 @@ To generate the concept activation vectors:
  
  ```
  python concept_activation_vectors.py
- 
  ```
 
 For further processing of the concepts and Concept Activation Vectors, See options in process_concepts.py.

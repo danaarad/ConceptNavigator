@@ -1,0 +1,17 @@
+tqdm
+PyDictionary
+
+numpy
+pandas
+torch
+torchvision
+transformers==4.20.1
+datasets==2.3.2
+sklearn
+
+matplotlib
+seaborn
+
+nltk
+
+adjustText

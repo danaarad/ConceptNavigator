@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Concept Navigator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+      .navbar_home {
+        background-color: #003c61 !important;
+      }
+      .navbar_bt:hover {
+        background-color: #003c61;
+        color: #ffffff !important;
+      }
+      .navbar_bt {
+        float: left;
+        font-size: 20px;
+        padding: 15px 15px 15px 15px;
+        border-radius: 3px;
+        text-align: center;
+        font-family: Poppins;
+      }
+
+      .title {
+        text-align: center;
+        font-family: Poppins;
+        font-size: 60px;
+        padding: 20px 20px 20px 20px;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-family: Poppins;
+        font-size: 28px;
+      }
+
+      .text {
+        font-size: 28px;
+      }
+
+      .navbar_a:hover {
+        color: #ffffff !important;
+      }
+
+      .scatter_img {
+        width: 95%;
+      }
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 80px;
+            height: 80px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .modal-body {
+            height: 60vh;
+            overflow-y: auto;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function update_slider(slider_name, output_name) {
+          var slider = document.getElementById(slider_name);
+          var output = document.getElementById(output_name);
+          if (slider_name == "distance") {
+            output.innerHTML = slider.value / 10;
+          } else if (slider_name == "neighbors" & slider.value == 0) {
+            output.innerHTML = 1;
+          } else if (slider_name == "perplexity" & slider.value == 0) {
+            output.innerHTML = 1;
+          } else {
+            output.innerHTML = slider.value;
+          }
+        }
+        
+        function change_color(eid, color) {
+          document.getElementById(eid).style.backgroundColor = color;
+        }
+
+
+        function new_scatter() {
+          var concept =  document.getElementById("concept").value;
+          console.log(concept);
+          
+          var url = "./define/" + concept.replace(" ", "_") + "/scatter_plot";
+          var params = {task: "category", dataset: "fashion"};
+          console.log(params);
+          $.post(url, params, function (data, textStatus) {
+            data = JSON.parse(data)
+            console.log(data);
+            document.getElementById("new_scatter_img").src = data.img_src;
+            document.getElementById("scatter_plot_div").style.display = "inline";
+            // document.getElementById("headingThree").classList.add("bg-info");
+            document.getElementById("scatter_title").style.backgroundColor = "#badee7";
+          })
+        }
+
+        function train_cavs() {
+          var concept =  document.getElementById("concept").value;
+          console.log(concept);
+          
+          var url = "./define/" + concept.replace(" ", "_") + "/train";
+          
+          var accuracy_threshold = document.getElementById("a_value").innerHTML
+          var dataset = document.getElementById("dataset").value;
+          var task = document.getElementById("task").value;
+
+          dataset = dataset == "Clothing Shoes and Jewelry" ? "fashion" : "electronic";
+          task = task == "Category Prediction" ? "category" : "price";
+
+          var params = {task: task, dataset: dataset, accuracy_threshold: accuracy_threshold};
+          console.log(params);
+
+          $.post(url, params, function (data, textStatus) {
+            data = JSON.parse(data)
+            console.log(data);
+            console.log(data["accuracies"]);
+            document.getElementById("accuracies_row").innerHTML = data.accuracies;
+            document.getElementById("accuracy_test").innerHTML = data.accuray_test;
+            document.getElementById("specificity_test").innerHTML = data.specificity_test;
+            document.getElementById("mean_accuracy").innerHTML = data.mean_accuracy;
+            document.getElementById("cav_data_div").style.display = "inline";
+            // document.getElementById("headingTwo").classList.add("bg-info");
+            document.getElementById("cavs_title").style.backgroundColor = "#badee7";
+            new_scatter();
+          })
+        }
+
+        function define_new_concept() {
+          // document.getElementById("headingOne").classList.remove("bg-info");
+          // document.getElementById("headingTwo").classList.remove("bg-info");
+          // document.getElementById("headingThree").classList.remove("bg-info");
+          document.getElementById("product_examples_title").style.backgroundColor = "#ffffff";
+          document.getElementById("cavs_title").style.backgroundColor = "#ffffff";
+          document.getElementById("scatter_title").style.backgroundColor = "#ffffff";
+
+          document.getElementById("pos_sample").style.display = "none";
+          document.getElementById("neg_sample").style.display = "none";
+          document.getElementById("cav_data_div").style.display = "none";
+          document.getElementById("scatter_plot_div").style.display = "none";
+
+          var concept =  document.getElementById("concept").value;
+          console.log(concept);
+          
+          var accuracy_threshold = document.getElementById("a_value").innerHTML
+          var dataset = document.getElementById("dataset").value;
+          var task = document.getElementById("task").value;
+
+          dataset = dataset == "Clothing Shoes and Jewelry" ? "fashion" : "electronic";
+          task = task == "Category Prediction" ? "category" : "price";
+
+          var url = "./define/" + concept.replace(" ", "_");
+          var params = {task: task, dataset: dataset, accuracy_threshold: accuracy_threshold};
+          console.log(params);
+          $.post(url, params, function (data, textStatus) {
+              console.log(data)
+              document.getElementById("pos_sample").style.display = "inline";
+              document.getElementById("pos_img_1").src = data.pos[0];
+              document.getElementById("pos_img_2").src = data.pos[1];
+              document.getElementById("pos_img_3").src = data.pos[2];
+              document.getElementById("pos_img_4").src = data.pos[3];
+              document.getElementById("pos_img_5").src = data.pos[4];
+              document.getElementById("pos_img_6").src = data.pos[5];
+              document.getElementById("pos_img_7").src = data.pos[6];
+              document.getElementById("pos_img_8").src = data.pos[7];
+
+              document.getElementById("neg_sample").style.display = "inline";
+              document.getElementById("neg_img_1").src = data.neg[0];
+              document.getElementById("neg_img_2").src = data.neg[1];
+              document.getElementById("neg_img_3").src = data.neg[2];
+              document.getElementById("neg_img_4").src = data.neg[3];
+              document.getElementById("neg_img_5").src = data.neg[4];
+              document.getElementById("neg_img_6").src = data.neg[5];
+              document.getElementById("neg_img_7").src = data.neg[6];
+              document.getElementById("neg_img_8").src = data.neg[7];
+
+              // document.getElementById("headingOne").classList.add("bg-info");
+              document.getElementById("product_examples_title").style.backgroundColor = "#badee7";
+              train_cavs();
+            }, "json");
+
+        }
+    </script>
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!-- style="font-family: Poppins;" -->
+    <div class="container-fluid" style="padding-top: 10px;">
+        <div class="row">
+          <div class="col-sm-1"><a style="color: #003c61;" class="navbar_a" href="/"><div class="navbar_bt">Home</div></a></div>
+          <div class="col-sm-1"><a style="color: #003c61;" class="navbar_a" href="explore"><div class="navbar_bt">Explore</div></a></div>
+          <div class="col-sm-1"><a style="color: #ffffff;" class="navbar_a" href="define"><div class="navbar_home navbar_bt">Define</div></a></div>
+            <div class="col-sm-9">
+            </div>
+        </div>
+        <div class="row" style="padding-top: 10px;">
+          <div class="container">
+            <h1 class="title">Define New Concepts</h1>
+            <p class="subtitle">Define new concepts, explore their accuracy and specificity scores, and view the new concept in relation to pre-computed concepts.</p>
+          </div> 
+        </div> 
+        <br><br>
+          <div class="row" style="font-size: 18px;">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-2">
+              <label  for="concept">Enter a concept:</label>
+              <input style="font-size: 20px;" type="text" id="concept" placeholder="Yellow Gold" class="form-control"><br>
+              
+              <label  for="dataset">Dataset:</label>
+              <select id="dataset" name="dataset" class="form-select" aria-label="Choose a category">
+                <option value="Clothing Shoes and Jewelry">Clothing Shoes and Jewelry</option>
+                <option value="Electronics">Electronics</option>
+              </select><br>
+              <label  for="task">Task:</label>
+              <select id="task" name="task" class="form-select" aria-label="Choose a task">
+                <option value="Category Prediction">Category Prediction</option>
+                <option value="Price Prediction">Price Prediction</option>
+              </select><br>
+
+              <label  for="accuracy_threshold">Accuracy Threshold:</label>
+              <input  id="accuracy_threshold" type="range" min="60" max="100" step="2" value="90" style="width: 60%;" oninput="update_slider('accuracy_threshold', 'a_value')" >
+              <span  id="a_value" style="margin-left: 1em">92</span> <br>
+              <br>
+              <input type="button" value="Define" style="width: 50%;float: left;font-size: 20px;
+                color: #ffffff;background-color: #003c61; padding: 10px 0px; cursor: pointer;
+                border-radius: 5px;text-align: center;" onclick="define_new_concept()"> 
+                <br><br>
+              
+                
+            </div>
+            <div class="col-md-8">
+              <div id="accordion">
+                <div class="accordion-item" id="product_examples_card">
+                  <div class="accordion-header" id="headingOne">
+                    <h3 class="mb-0">
+                      <button id="product_examples_title" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <!-- <b style="font-size: 16px; color: #000000;">Product Examples</b> -->
+                        <b  style="color: #000000;">Product Examples</b>
+                      </button>
+                    </h3>
+                </div>
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <div id="pos_sample" style="display: none;">
+                        <p  ><b>Positive Examples</b></p>
+                      <img id="pos_img_1" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_2" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_3" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_4" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_5" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_6" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_7" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="pos_img_8" src="" style="width: 100px; padding-right: 20px;">
+                      </div>
+                      <br><br>
+                      <div id="neg_sample" style="display: none;">
+                        <p ><b>Negative Examples</b></p>
+                      <img id="neg_img_1" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_2" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_3" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_4" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_5" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_6" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_7" src="" style="width: 100px; padding-right: 20px;">
+                      <img id="neg_img_8" src="" style="width: 100px; padding-right: 20px;">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item" id="cavs_card">
+                  <div class="accordion-header" id="headingTwo">
+                    <h3 class="mb-0">
+                      <button id="cavs_title" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <!-- <b style="font-size: 16px; color: #000000;">Concept Activation Vectors</b> -->
+                        <b  style="color: #000000;">Concept Activation Vectors</b>
+                      </button>
+                    </h3>
+                  </div>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                    <div class="accordion-body" >
+                    <div id="cav_data_div" style="display: none; font-size: 16px;">
+                      <div id="accuracy_test">test</div>
+                      <div id="specificity_test">test</div>
+                      <p><b>Mean Concept Activation Vector Accuracy: <span id="mean_accuracy" style="display: inline;"></span>%</b></p>
+                      <p><b>Concept Activation Vectors Accuracies:</b></p>
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr id="accuracies_row">
+                          </tr>
+                        </thead>
+                        </table>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                <div class="accordion-item" id="scatter_plot_card">
+                  <div class="accordion-header" id="headingThree">
+                    <h5 class="mb-0">
+                      <button id="scatter_title" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <b style="font-size: 16px; color: #000000;">New Scatter Plot</b>
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                    <div class="accordion-body">
+                      <div  style="display: none;" id="scatter_plot_div">
+                      <b>Concepts Scatter Plot after T-SNE with perplexity 15:</b><br>
+                      <img id="new_scatter_img" style=" width: 80%;">
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-1">
+            </div>
+          </div>
+        
+</body>
+
+</html>

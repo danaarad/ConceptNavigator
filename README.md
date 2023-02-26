@@ -2,7 +2,7 @@
 An implementation of Concept Navigator: Exploring and Analyzing Concepts in e-Commerce Models
 
 ## Demonstration Video
-A system semonstration video is [avaliable]().
+A system semonstration video is [avaliable](https://drive.google.com/file/d/1wjjfnvyn0OCsTVRk4MdKbrfADQ7mafBS/view?usp=sharing).
 
 ## Abstract
 Explainable machine learning methods are imperative to increasing decision transparency and improving customer trust. In recent years, opaque model architectures, specifically deep neural networks, have become popular in the domain of e-commerce. In order to take advantage of the high accuracy of these models, while still enabling decision transparency, the research community has sought methods to analyze and explain their decision process.
